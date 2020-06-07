@@ -154,6 +154,9 @@ n_iter = 0
 
 def main():
     global args, best_error, n_iter
+    global best_list
+    best_list = [100,100,100,0,0,0]
+
     args = parser.parse_args()
     if args.dataset_format == 'stacked':
         from datasets.stacked_sequence_folders import SequenceFolder
@@ -386,6 +389,52 @@ def main():
 
             error_string = ', '.join('{} : {:.3f}'.format(name, error) for name, error in zip(error_names, errors))
 
+            current_error = 0
+            for name, error, best_error in zip(error_names, errors, best_list):# ['abs_diff', 'abs_rel', 'sq_rel', 'a1', 'a2', 'a3']
+                if name  in  ['abs_diff', 'abs_rel', 'sq_rel']:
+                    if error < best_error:
+                        best_list[current_error] = error
+                        save_checkpoint_best(
+                            args.save_path, {
+                                'epoch': epoch + 1,
+                                'state_dict': disp_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': pose_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': mask_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': flow_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': optimizer.state_dict()
+                            },
+                            name)
+                elif name in [ 'a1', 'a2', 'a3']:
+                    if error > best_error:
+                        best_list[current_error] = error
+                        save_checkpoint_best(
+                            args.save_path, {
+                                'epoch': epoch + 1,
+                                'state_dict': disp_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': pose_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': mask_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': flow_net.module.state_dict()
+                            }, {
+                                'epoch': epoch + 1,
+                                'state_dict': optimizer.state_dict()
+                            },
+                            name)
+                current_error = current_error+1
+
             if args.log_terminal:
                 logger.valid_writer.write(' * Avg {}'.format(error_string))
             else:
@@ -448,26 +497,6 @@ def main():
             },
             is_best)
 
-        if epoch % 10 == 0:
-            save_checkpoint_per_print_freq(
-                args.save_path, {
-                    'epoch': epoch + 1,
-                    'state_dict': disp_net.module.state_dict()
-                }, {
-                    'epoch': epoch + 1,
-                    'state_dict': pose_net.module.state_dict()
-                }, {
-                    'epoch': epoch + 1,
-                    'state_dict': mask_net.module.state_dict()
-                }, {
-                    'epoch': epoch + 1,
-                    'state_dict': flow_net.module.state_dict()
-                }, {
-                    'epoch': epoch + 1,
-                    'state_dict': optimizer.state_dict()
-                },
-                n_iter)
-        
 
 
         with open(args.save_path/args.log_summary, 'a') as csvfile:

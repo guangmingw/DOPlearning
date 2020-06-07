@@ -63,14 +63,16 @@ def save_checkpoint(save_path, dispnet_state, posenet_state, masknet_state, flow
 
     
 
-def save_checkpoint_per_print_freq(save_path, dispnet_state, posenet_state, masknet_state, flownet_state, optimizer_state, n_iter, filename='checkpoint.pth.tar'):
+def save_checkpoint_best(save_path, dispnet_state, posenet_state, masknet_state, flownet_state, optimizer_state, name, filename='checkpoint.pth.tar'):
     file_prefixes = ['dispnet', 'posenet', 'masknet', 'flownet', 'optimizer']
     states = [dispnet_state, posenet_state, masknet_state, flownet_state, optimizer_state]
-    path_for_save = save_path/'{}'.format(n_iter)
+    path_for_save = save_path/name
     path_for_save.makedirs_p()
 
     for (prefix, state) in zip(file_prefixes, states):
-        torch.save(state, path_for_save/'{}_{}_{}'.format(n_iter,prefix,filename))
+        torch.save(state, path_for_save/'{}_{}'.format(prefix,filename))
+
+
     
     
             
