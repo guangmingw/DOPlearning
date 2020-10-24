@@ -18,7 +18,7 @@ from inverse_warp_summary import inverse_warp, pose2flow, flow2oob, flow_warp
 from loss_functions_summary import compute_joint_mask_for_depth
 from loss_functions_summary import consensus_exp_masks, consensus_depth_flow_mask, explainability_loss, gaussian_explainability_loss, smooth_loss, edge_aware_smoothness_loss
 from loss_functions_summary import photometric_reconstruction_loss, photometric_flow_loss
-from loss_functions_summary import compute_errors, compute_epe, compute_all_epes, flow_diff, spatial_normalize_max, spatial_normalize_mean, new_static_mask, build_flow_not_intersect
+from loss_functions_summary import compute_errors, compute_epe, compute_all_epes, flow_diff, spatial_normalize_max, spatial_normalize_mean, new_static_mask
 from loss_functions_summary import less_than_mean_flow_mask, less_than_mean_depth_mask, mask_p01_tensorboard, maskp01_mask, a1_a2_rigid_mask, depth_supervise_flow, spatial_normalize_min
 from logger import TermLogger, AverageMeter
 from path import Path
