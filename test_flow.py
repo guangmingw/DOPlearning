@@ -157,7 +157,7 @@ def main():
         rigidity_mask_census = (  (torch.pow(rigidity_mask_census_soft[:,0],2) + torch.pow(rigidity_mask_census_soft[:,1] , 2)) < THRESH_1 *( flow_cam.pow(2).sum(dim=1) + flow_fwd.pow(2).sum(dim=1)) + THRESH_2).type_as(flow_fwd)
 
         # rigidity_mask_census = torch.zeros_like(rigidity_mask_census)
-        rigidity_mask_fwd = torch.zeros_like(rigidity_mask_fwd)
+        rigidity_mask_fwd = torch.zeros_like(rigidity_mask_fwd[0])
         rigidity_mask_combined = 1 - (1-rigidity_mask_fwd)*(1-rigidity_mask_census) #
         obj_map_gt_var_expanded = obj_map_gt_var.unsqueeze(1).type_as(flow_fwd)
 
